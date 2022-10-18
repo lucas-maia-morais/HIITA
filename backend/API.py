@@ -102,7 +102,7 @@ def home():
     return redirect(url_for('login'))
 
 # http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for loggedin users
-@app.route('/pythonlogin/profile')
+@app.route('/HIITA/profile')
 def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
