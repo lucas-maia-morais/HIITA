@@ -23,6 +23,8 @@ Para rodar:
 flask --app backend/API.py run
 ```
 
+O site está hosteado em http://127.0.0.1:5000/HIITA
+
 ### Cliente/Front-end
 Foi utilizada a tecnologia Vue para implementar o front-end da aplicação. Para isso devemos segue abaixo um passo a passo para instalação:
 ```
