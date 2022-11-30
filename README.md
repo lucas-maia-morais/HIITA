@@ -18,7 +18,8 @@ pip install requests
 pip install flask_sqlalchemy
 pip install flask_cors
 ```
-Para rodar:
+
+Para executar o backend do projeto, em um terminal:
 ```
 flask --app backend/API.py run
 ```
@@ -31,7 +32,8 @@ Foi utilizada a tecnologia Vue para implementar o front-end da aplicação. Para
 sudo npm install -g @vue/cli@4.5.11
 ```
 
-Para rodar:
+Para executar o frontend do projeto, em um novo terminal:
 ```
+cd frontend
 npm run serve
 ```
