@@ -1,23 +1,24 @@
 <template>
-<div>
-    <h2>Profile Page</h2>
-<div>
-    <p>Your account details are below:</p>
-    <table>
-        <tr>
-            <td>Username:</td>
-            <td>{{ account['username'] }}</td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td>{{ account['password'] }}</td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td>{{ account['email'] }}</td>
-        </tr>
-    </table>
-</div>
+<div class="loggedin content">
+  <h2>Profile Page</h2>
+  <div>
+      <p>Your account details are below:</p>
+      <table>
+          <tr>
+              <td>Username:</td>
+              <td>{{ account['username'] }}</td>
+          </tr>
+          <tr>
+              <td>Password:</td>
+              <td>{{ account['password'] }}</td>
+          </tr>
+          <tr>
+              <td>Email:</td>
+              <td>{{ account['email'] }}</td>
+          </tr>
+      </table>
+  </div>
+  <!-- Colocar aqui componente com treinos realizados pelo usuário -->
 </div>
 </template>
 

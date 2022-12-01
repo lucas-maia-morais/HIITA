@@ -1,9 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
+from flask_cors import CORS
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
+
+# Enable CORS
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
@@ -18,15 +23,17 @@ app.config['MYSQL_DB'] = 'HIITA'
 mysql = MySQL(app)
 
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
-@app.route('/HIITA/', methods=['GET', 'POST'])
+@app.route('/HIITA/login', methods=['GET', 'POST'])
 def login():
     # Output message if something goes wrong...
     msg = ''
+    data = request.get_json()
+    error = True
     # Check if "username" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+    if request.method == 'POST' and 'username' in data and 'password' in data:
         # Create variables for easy access
-        username = request.form['username']
-        password = request.form['password']
+        username = data['username']
+        password = data['password']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
@@ -38,13 +45,14 @@ def login():
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
+            error = False
             # Redirect to home page
-            return redirect(url_for('home'))
+            return jsonify({'message': msg, 'error': error})
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
     # Show the login form with message (if any)
-    return render_template('index.html', msg=msg)
+    return jsonify({'message': msg, 'error': error})
 
 # http://localhost:5000/python/logout - this will be the logout page
 @app.route('/HIITA/logout')
@@ -56,23 +64,34 @@ def logout():
    # Redirect to login page
    return redirect(url_for('login'))
 
+@app.route('/HIITA/Register', methods=['GET', 'POST'])
+def Register():
+    msg = ''
+    # print(request, file=sys.stderr)
+    data = request.get_json()
+    print(data['email'])
+    return jsonify({'answer': 'cheese'})
+
 # http://localhost:5000/pythinlogin/register - this will be the registration page, we need to use both GET and POST requests
 @app.route('/HIITA/register', methods=['GET', 'POST'])
 def register():
     # Output message if something goes wrong...
     msg = ''
+    data = request.get_json()
+    error = True
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    if request.method == 'POST' and 'username' in data and 'password' in data and 'email' in data:
         # Create variables for easy access
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
+        username = data['username']
+        password = data['password']
+        email = data['email']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
         account = cursor.fetchone()
         # If account exists show error and validation checks
         if account:
+            existingData = account
             msg = 'Account already exists!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             msg = 'Invalid email address!'
@@ -85,21 +104,23 @@ def register():
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
+            error = False
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
-    return render_template('register.html', msg=msg)
+    return jsonify({'message': msg, 'error': error, 'existingData': existingData})
 
 # http://localhost:5000/pythinlogin/home - this will be the home page, only accessible for loggedin users
-@app.route('/HIITA/home')
-def home():
+@app.route('/HIITA/loggedin', methods=['GET'])
+def loggedin():
     # Check if user is loggedin
+    print(session)
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('home.html', username=session['username'])
+        return jsonify({'loggedin': True, 'username': session['username']})
     # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
+    return {'loggedin': False, 'username': ''}
 
 # http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for loggedin users
 @app.route('/HIITA/profile')
