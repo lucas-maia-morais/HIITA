@@ -8,8 +8,8 @@
                 </router-link>
                 <router-link to="/"><i class="fas fa-home"></i>Home</router-link>
                 <router-link to="/Profile"><i class="fas fa-user-circle"></i>Profile</router-link>
-                <router-link @click="logout" to="/"><i
-                    class="fas fa-sign-out-alt"></i>Logout</router-link>
+                <a @click="logout" href="/"><i
+                    class="fas fa-sign-out-alt"></i>Logout</a>
             </div>
         </nav>
     </div>
@@ -22,13 +22,12 @@ export default {
   name: 'Navbar',
   props: ['logo', 'alt'],
   methods: {
-    logout() {
+    async logout() {
       const path = 'http://localhost:5000/HIITA/logout';
 
-      fetch(path, {
+      await fetch(path, {
         method: 'GET',
       });
-    //   route.push({ path: '/' });
     },
   },
 };

@@ -5,12 +5,17 @@
             <label for="username">
                 <i class="fas fa-user"></i>
             </label>
-            <input type="text" name="username" placeholder="Username"
+            <input type="text" name="username" placeholder="CPF"
                 id="username" required v-model="form.username">
+            <label for="name">
+                <i class="fas fa-fire"></i>
+            </label>
+            <input type="text" name="name" placeholder="Nome"
+                id="nome" required v-model="form.name">
             <label for="password">
                 <i class="fas fa-lock"></i>
             </label>
-            <input type="password" name="password" placeholder="Password"
+            <input type="password" name="password" placeholder="Senha"
                 id="password" required v-model="form.password">
             <label for="email">
                 <i class="fas fa-envelope"></i>
@@ -35,6 +40,7 @@ export default {
     return {
       form: {
         username: '',
+        name: '',
         password: '',
         email: '',
       },

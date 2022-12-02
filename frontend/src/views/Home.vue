@@ -3,6 +3,7 @@
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <h2>Home Page</h2>
+    <p>Seja bem vindo {{this.name}}</p>
     <Message v-if="showMessage" :message=message :error=false />
     <Train :train="choosedTrain" :exercises="exercises" v-if="isTrainingVisible"
       @saveTrain="saveTrain" @closeTrain="closeTrain"/>
@@ -12,7 +13,7 @@
         <th>Descricao</th>
         <th>Escolher</th>
       </tr>
-      <TrainHeader v-for="(treino, index) in treinos" :key="index" :treino="treino"
+      <TrainHeader v-for="ficha in fichas" :key="ficha.ID" :treino="ficha"
         @showTrain="showTrain"/>
     </table>
     <!-- Criar componente aqui de treinos Header disponiveis -->
@@ -36,9 +37,9 @@ export default {
   },
   data() {
     return {
-      username: 'Neymar',
-      treinos: [{ id: '1', title: 'peito', descricao: 'treino de peito' },
-        { id: '2', title: 'costas', descricao: 'treino de costas' }],
+      name: 'Neymar',
+      fichas: [{ ID: '1', TITULO: 'peito', DESCRICAO: 'treino de peito' },
+        { ID: '2', TITULO: 'costas', DESCRICAO: 'treino de costas' }],
       isTrainingVisible: false,
       choosedTrain: {},
       exercises: [],
@@ -47,28 +48,64 @@ export default {
     };
   },
   async created() {
-    const path = 'http://localhost:5000/HIITA/loggedin';
+    const pathLoggedin = 'http://localhost:5000/HIITA/loggedin';
 
-    const req = await fetch(path, {
+    const reqLoggedin = await fetch(pathLoggedin, {
       method: 'GET',
       headers: new Headers(),
     });
-    // console.log(req);
-    const res = await req.json();
-    this.loggedin = res.loggedin;
-    console.log(this.loggedin);
+
+    const resLoggedin = await reqLoggedin.json();
+    this.loggedin = resLoggedin.loggedin;
+    this.name = resLoggedin.account.NOME;
+
+    const pathFichas = 'http://localhost:5000/HIITA/fichas';
+    const reqFichas = await fetch(pathFichas, {
+      method: 'GET',
+      headers: new Headers(),
+    });
+
+    const resFichas = await reqFichas.json();
+    console.log(resFichas);
+    this.fichas = resFichas.fichas;
   },
   methods: {
-    showTrain(tid) {
+    async showTrain(tid) {
       this.isTrainingVisible = true;
       const trainId = tid;
-      this.choosedTrain = this.treinos.find((el) => el.id === trainId);
+      this.choosedTrain = this.fichas.find((el) => el.ID === trainId);
+
       this.exercises = [{ id: '1', title: 'supino', descricao: '3x10' },
         { id: '2', title: 'barra', descricao: '4x10' }];
+
+      const path = 'http://localhost:5000/HIITA/treino';
+      const dataJson = JSON.stringify({ trainID: trainId });
+
+      const req = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: dataJson,
+      });
+
+      const res = await req.json();
+      console.log(res.exercises);
+      this.exercises = res.exercises;
     },
-    saveTrain() {
-      this.message = 'Treino salvo';
+    async saveTrain() {
+      const path = 'http://localhost:5000/HIITA/salvar';
+      const trainId = this.choosedTrain.ID;
+      const dataJson = JSON.stringify({ trainID: trainId });
+
+      const req = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: dataJson,
+      });
+
+      this.message = `Treino salvo ${this.choosedTrain.TITULO}`;
+      this.isTrainingVisible = false;
       this.showMessage = true;
+      this.choosedTrain = {};
       setTimeout(() => {
         this.showMessage = false;
         this.message = '';

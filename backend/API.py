@@ -10,6 +10,9 @@ app.config['DEBUG'] = True
 # Enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+# Opened connexions
+frontend_connexion = {}
+
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
 
@@ -17,10 +20,20 @@ app.secret_key = 'your secret key'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'lucas'
 app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'HIITA'
+app.config['MYSQL_DB'] = 'hiita'
 
 # Intialize MySQL
 mysql = MySQL(app)
+
+# http://localhost:5000/python/logout - this will be the logout page
+@app.route('/HIITA/logout')
+def logout():
+    # Remove session data, this will log the user out
+   frontend_connexion.pop('loggedin')
+   frontend_connexion.pop('id', None)
+   frontend_connexion.pop('username', None)
+   # Redirect to login page
+   return jsonify({'error': False})
 
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/HIITA/login', methods=['GET', 'POST'])
@@ -36,41 +49,24 @@ def login():
         password = data['password']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+        cursor.execute('SELECT * FROM USERNAME WHERE CPF = %s AND SENHA = %s', (username, password,))
         # Fetch one record and return result
         account = cursor.fetchone()
+        print(account)
         # If account exists in accounts table in out database
         if account:
             # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['username'] = account['username']
+            frontend_connexion['loggedin'] = True
+            frontend_connexion['ID'] = account['ID']
+            frontend_connexion['username'] = account['CPF']
             error = False
             # Redirect to home page
             return jsonify({'message': msg, 'error': error})
         else:
             # Account doesnt exist or username/password incorrect
-            msg = 'Incorrect username/password!'
+            msg = 'CPF/Senha Incorreto(s)!'
     # Show the login form with message (if any)
     return jsonify({'message': msg, 'error': error})
-
-# http://localhost:5000/python/logout - this will be the logout page
-@app.route('/HIITA/logout')
-def logout():
-    # Remove session data, this will log the user out
-   session.pop('loggedin', None)
-   session.pop('id', None)
-   session.pop('username', None)
-   # Redirect to login page
-   return redirect(url_for('login'))
-
-@app.route('/HIITA/Register', methods=['GET', 'POST'])
-def Register():
-    msg = ''
-    # print(request, file=sys.stderr)
-    data = request.get_json()
-    print(data['email'])
-    return jsonify({'answer': 'cheese'})
 
 # http://localhost:5000/pythinlogin/register - this will be the registration page, we need to use both GET and POST requests
 @app.route('/HIITA/register', methods=['GET', 'POST'])
@@ -80,58 +76,121 @@ def register():
     data = request.get_json()
     error = True
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in data and 'password' in data and 'email' in data:
+    if request.method == 'POST' and 'username' in data and 'password' in data and 'email' in data and 'name' in data:
         # Create variables for easy access
         username = data['username']
         password = data['password']
         email = data['email']
+        name = data['name']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
+        cursor.execute('SELECT * FROM USERNAME WHERE CPF = %s', (username,))
         account = cursor.fetchone()
         # If account exists show error and validation checks
         if account:
             existingData = account
-            msg = 'Account already exists!'
+            msg = 'Já existe conta com este CPF!'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            msg = 'Invalid email address!'
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            msg = 'Username must contain only characters and numbers!'
+            msg = 'Endereço de email inválido!'
+        elif not re.match(r'[0-9]+', username):
+            msg = 'CPF deve conter apenas números'
         elif not username or not password or not email:
-            msg = 'Please fill out the form!'
+            msg = 'Por favor termine o preenchimento!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
+            cursor.execute('INSERT INTO USERNAME (`ID`,`CPF`,`NOME`,`EMAIL`,`SENHA`) VALUES (NULL, %s, %s, %s, %s)', 
+                            (username, name, email, password,))
             mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            msg = 'Registro com sucesso!'
             error = False
     elif request.method == 'POST':
         # Form is empty... (no POST data)
-        msg = 'Please fill out the form!'
+        msg = 'Por favor preencha o formulário!'
     # Show registration form with message (if any)
-    return jsonify({'message': msg, 'error': error, 'existingData': existingData})
+    return jsonify({'message': msg, 'error': error})
 
 # http://localhost:5000/pythinlogin/home - this will be the home page, only accessible for loggedin users
 @app.route('/HIITA/loggedin', methods=['GET'])
 def loggedin():
     # Check if user is loggedin
-    print(session)
-    if 'loggedin' in session:
+    if 'loggedin' in frontend_connexion:
         # User is loggedin show them the home page
-        return jsonify({'loggedin': True, 'username': session['username']})
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM USERNAME WHERE CPF = %s', (frontend_connexion['username'],))
+        account = cursor.fetchone()
+        return jsonify({'loggedin': True, 'username': frontend_connexion['username'], 'account': account})
+    if 'loggedin' in frontend_connexion:
+        return jsonify({'loggedin': True, 'username': 'OK para gambiarra'}  )
     # User is not loggedin redirect to login page
-    return {'loggedin': False, 'username': ''}
+    return jsonify({'loggedin': False, 'username': ''})
 
-# http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for loggedin users
-@app.route('/HIITA/profile')
-def profile():
+# http://localhost:5000/pythinlogin/ficha - this will be the train page, only accessible for loggedin users
+@app.route('/HIITA/fichas', methods=['GET'])
+def fichas():
     # Check if user is loggedin
-    if 'loggedin' in session:
+    if 'loggedin' in frontend_connexion:
+        # We need all the account info for the user so we can display it on the ficha page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT ID, TITULO, DESCRICAO FROM FICHA WHERE USERNAME_ID = %s', (frontend_connexion['ID'],))
+        training_sheets = cursor.fetchall()
+
+        # Show the profile page with account info
+        return jsonify({'fichas': training_sheets})
+    # User is not loggedin redirect to login page
+    return jsonify({'fichas': {}})
+
+# http://localhost:5000/pythinlogin/treino - this will be the train page, only accessible for loggedin users
+@app.route('/HIITA/treino', methods=['POST'])
+def treino():
+    # Check if user is loggedin
+    data = request.get_json()
+    if 'loggedin' in frontend_connexion:
         # We need all the account info for the user so we can display it on the profile page
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
-        account = cursor.fetchone()
+        cursor.execute('SELECT ID, NOME_EXERCICIO, DESCRICAO FROM EXERCICIO WHERE FICHA_ID = %s', (data['trainID'],))
+        exercises = cursor.fetchall()
         # Show the profile page with account info
-        return render_template('profile.html', account=account)
+        return jsonify({'exercises': exercises})
     # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
+    return jsonify({'exercises': {}})
+
+@app.route('/HIITA/realizados')
+def realizados():
+    # Check if user is loggedin
+    performed_final = []
+    if 'loggedin' in frontend_connexion:
+        # We need all the account info for the user so we can display it on the profile page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT TREINO.DATAHORA AS DATAHORA, FICHA.TITULO AS TITULO FROM TREINO '
+                        'INNER JOIN FICHA ON TREINO.FICHA_ID = FICHA.ID '+
+                        'WHERE FICHA.USERNAME_ID = %s', (frontend_connexion['ID'],))
+        performed = cursor.fetchall()
+        print(type(performed))
+        print(performed)
+        for p in performed:
+            temp = {}
+            temp['TITULO'] = p['TITULO']
+            temp['DATA'] = p['DATAHORA'].date()
+            temp['HORA'] = str(p['DATAHORA'].time())
+            performed_final.append(temp)
+        # Show the profile page with account info
+        return jsonify({'realizeds': performed_final})
+    # User is not loggedin redirect to login page
+    return jsonify({'realized': {}})
+
+@app.route('/HIITA/salvar', methods=['POST'])
+def save():
+    # Check if user is loggedin
+    data = request.get_json()
+    if 'loggedin' in frontend_connexion:
+        # We need all the account info for the user so we can display it on the profile page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        print(frontend_connexion['ID'])
+        print(data['trainID'])
+        cursor.execute('INSERT INTO TREINO (`ID`,`USERNAME_ID`,`FICHA_ID`,`DATAHORA`) VALUES (NULL, %s, %s, NOW())', 
+                        (int(frontend_connexion['ID']), int(data['trainID']),))
+        mysql.connection.commit()
+        # Show the profile page with account info
+        return jsonify({'error': False})
+    # User is not loggedin redirect to login page
+    return jsonify({'error': True})

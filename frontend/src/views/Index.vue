@@ -31,5 +31,10 @@ export default {
     this.loggedin = res.loggedin;
     this.username = res.username;
   },
+  methods: {
+    updateLoggedin() {
+      this.loggedin = true;
+    },
+  },
 };
 </script>

@@ -1,8 +1,8 @@
 <template>
     <tr class="trainheader">
-        <td>{{treino.title}}</td>
-        <td>{{treino.descricao}}</td>
-        <td><button @click="$emit('showTrain', treino.id)">
+        <td>{{treino.TITULO}}</td>
+        <td>{{treino.DESCRICAO}}</td>
+        <td><button @click="$emit('showTrain', treino.ID)">
           <i class="fas fa-check"></i></button></td>
     </tr>
 </template>

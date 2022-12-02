@@ -1,8 +1,8 @@
 <template>
     <tr class="trainexecuted">
-        <td>{{treino.data}}</td>
-        <td>{{treino.hora}}</td>
-        <td>{{treino.title}}</td>
+        <td>{{treino.DATA}}</td>
+        <td>{{treino.HORA}}</td>
+        <td>{{treino.TITULO}}</td>
     </tr>
 </template>
 

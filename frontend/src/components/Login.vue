@@ -5,12 +5,12 @@
             <label for="username">
                 <i class="fas fa-user"></i>
             </label>
-            <input type="text" name="username" placeholder="Username"
+            <input type="text" name="username" placeholder="CPF"
                             id="username" required v-model="form.username">
             <label for="password">
                 <i class="fas fa-lock"></i>
             </label>
-            <input type="password" name="password" placeholder="Password"
+            <input type="password" name="password" placeholder="Senha"
               id="password" required v-model="form.password">
             <input type="submit" value="Login">
         </form>
@@ -64,17 +64,7 @@ export default {
       this.messageCreation(res);
       console.log(res);
       if (!res.error) {
-        console.log(res);
-        console.log('teste de funcionalidade');
-        // this.$emit('update-loggedin', res);
-        // router.push({ path: 'About' });
-        const path2 = 'http://localhost:5000/HIITA/loggedin';
-
-        const req2 = await fetch(path2, {
-          method: 'GET',
-        });
-        const res2 = await req2.json();
-        console.log(res2);
+        this.$emit('updateLoggedin');
       }
     },
   },

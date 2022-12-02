@@ -5,16 +5,20 @@
       <p>Your account details are below:</p>
       <table>
           <tr>
-              <td>Username:</td>
-              <td>{{ account['username'] }}</td>
+              <td>CPF:</td>
+              <td>{{ account['CPF'] }}</td>
           </tr>
           <tr>
-              <td>Password:</td>
-              <td>{{ account['password'] }}</td>
+              <td>Nome:</td>
+              <td>{{ account['NOME'] }}</td>
+          </tr>
+          <tr>
+              <td>Senha:</td>
+              <td>{{ account['SENHA'] }}</td>
           </tr>
           <tr>
               <td>Email:</td>
-              <td>{{ account['email'] }}</td>
+              <td>{{ account['EMAIL'] }}</td>
           </tr>
       </table>
       <h1>Table of training performed</h1>
@@ -24,7 +28,7 @@
         <th>Hora</th>
         <th>Treino</th>
       </tr>
-      <TrainExecuted v-for="(treino, index) in treinos" :key="index" :treino="treino"/>
+      <TrainExecuted v-for="(realizado, index) in realizados" :key="index" :treino="realizado"/>
     </table>
   </div>
   <!-- Colocar aqui componente com treinos realizados pelo usuário -->
@@ -39,13 +43,34 @@ export default {
   data() {
     return {
       account: {
-        username: 'neymarjr',
-        email: 'neymarjr@gmail.com',
-        password: 'hexa',
+        CPF: '1111',
+        NOME: 'neymar',
+        EMAIL: 'neymarjr@gmail.com',
+        SENHA: 'hexa',
       },
-      treinos: [{ data: '21/11/2022', hora: '12:30', title: 'Peito' },
-        { data: '22/11/2022', hora: '7:30', title: 'costas' }],
+      realizados: [{ DATA: '21/11/2022', HORA: '12:30', TITULO: 'Peito' },
+        { DATA: '22/11/2022', HORA: '7:30', TITULO: 'costas' }],
     };
+  },
+  async created() {
+    const path = 'http://localhost:5000/HIITA/loggedin';
+
+    const req = await fetch(path, {
+      method: 'GET',
+      headers: new Headers(),
+    });
+
+    const res = await req.json();
+    this.account = res.account;
+
+    const pathRealizados = 'http://localhost:5000/HIITA/realizados';
+    const reqRealizados = await fetch(pathRealizados, {
+      method: 'GET',
+      headers: new Headers(),
+    });
+
+    const resRealizados = await reqRealizados.json();
+    this.realizados = resRealizados.realizeds
   },
 };
 </script>

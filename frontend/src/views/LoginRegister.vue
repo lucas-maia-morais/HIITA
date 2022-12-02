@@ -1,12 +1,12 @@
 <template>
     <div class="login_register">
       <h1 v-if="showLogin">Login</h1>
-      <h1 v-else>Register</h1>
+      <h1 v-else>Cadastro</h1>
       <div class="links">
         <a @click="showLogin=true" :class="{active: showLogin }">Login</a>
-        <a @click="showLogin=false" :class="{active: !showLogin }">Register</a>
+        <a @click="showLogin=false" :class="{active: !showLogin }">Cadastro</a>
       </div>
-      <Login @update-loggedin="updateLoggedin(res)" v-if="showLogin" />
+      <Login @updateLoggedin="updateLoggedin" v-if="showLogin" />
       <Register v-else />
     </div>
 </template>
@@ -24,6 +24,11 @@ export default {
     return {
       showLogin: true,
     };
+  },
+  methods: {
+    updateLoggedin() {
+      this.$emit('updateLoggedin');
+    },
   },
 };
 </script>
