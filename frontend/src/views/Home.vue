@@ -96,7 +96,7 @@ export default {
       const trainId = this.choosedTrain.ID;
       const dataJson = JSON.stringify({ trainID: trainId });
 
-      const req = await fetch(path, {
+      await fetch(path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: dataJson,

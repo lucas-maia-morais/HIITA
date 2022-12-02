@@ -1,8 +1,8 @@
 <template>
 <div class="loggedin content">
-  <h2>Profile Page</h2>
+  <h2>Perfil</h2>
   <div>
-      <p>Your account details are below:</p>
+      <p>Detalhes pessoais:</p>
       <table>
           <tr>
               <td>CPF:</td>
@@ -21,7 +21,7 @@
               <td>{{ account['EMAIL'] }}</td>
           </tr>
       </table>
-      <h1>Table of training performed</h1>
+      <h1>Tabela de treinos realizados</h1>
     <table class="trainheadertable">
       <tr>
         <th>Data</th>
@@ -70,12 +70,13 @@ export default {
     });
 
     const resRealizados = await reqRealizados.json();
-    this.realizados = resRealizados.realizeds
+    this.realizados = resRealizados.realizeds;
   },
 };
 </script>
 
 <style scoped>
+
 .trainheadertable {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;

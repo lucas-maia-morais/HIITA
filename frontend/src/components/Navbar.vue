@@ -7,7 +7,7 @@
                     <img :src="logo" :alt ="alt" id="logo" />
                 </router-link>
                 <router-link to="/"><i class="fas fa-home"></i>Home</router-link>
-                <router-link to="/Profile"><i class="fas fa-user-circle"></i>Profile</router-link>
+                <router-link to="/Profile"><i class="fas fa-user-circle"></i>Perfil</router-link>
                 <a @click="logout" href="/"><i
                     class="fas fa-sign-out-alt"></i>Logout</a>
             </div>
@@ -39,7 +39,7 @@ export default {
     height: 40px;
 }
 .navtop {
-    background-color: #2f3947;
+    background-color: whitesmoke;
     height: 60px;
     width: 100%;
     border: 0;
@@ -72,6 +72,6 @@ export default {
     padding: 2px 8px 0 0;
 }
 .navtop div a:hover {
-    color: #eaebed;
+    color: grey;
 }
 </style>
