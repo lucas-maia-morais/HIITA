@@ -8,19 +8,29 @@
                 </router-link>
                 <router-link to="/"><i class="fas fa-home"></i>Home</router-link>
                 <router-link to="/Profile"><i class="fas fa-user-circle"></i>Profile</router-link>
-                <router-link to="/Logout"><i class="fas fa-sign-out-alt"></i>Logout</router-link>
-                <!-- <a href=""><i class="fas fa-home"></i>Home</a>
-                <a href=""><i class="fas fa-user-circle"></i>Profile</a>
-                <a href=""><i class="fas fa-sign-out-alt"></i>Logout</a> -->
+                <router-link @click="logout" to="/"><i
+                    class="fas fa-sign-out-alt"></i>Logout</router-link>
             </div>
         </nav>
     </div>
 </template>
 
 <script>
+// import route from '../router';
+
 export default {
   name: 'Navbar',
   props: ['logo', 'alt'],
+  methods: {
+    logout() {
+      const path = 'http://localhost:5000/HIITA/logout';
+
+      fetch(path, {
+        method: 'GET',
+      });
+    //   route.push({ path: '/' });
+    },
+  },
 };
 </script>
 

@@ -37,9 +37,6 @@ export default {
       showMessage: false,
     };
   },
-  props: {
-    loggedin: Boolean,
-  },
   methods: {
     async messageCreation(res) {
       this.message = res.message;
@@ -62,12 +59,22 @@ export default {
         headers: { 'Content-Type': 'application/json' },
         body: dataJson,
       });
-
+      console.log(req);
       const res = await req.json();
       this.messageCreation(res);
       console.log(res);
       if (!res.error) {
-        this.props.loggedin = true;
+        console.log(res);
+        console.log('teste de funcionalidade');
+        // this.$emit('update-loggedin', res);
+        // router.push({ path: 'About' });
+        const path2 = 'http://localhost:5000/HIITA/loggedin';
+
+        const req2 = await fetch(path2, {
+          method: 'GET',
+        });
+        const res2 = await req2.json();
+        console.log(res2);
       }
     },
   },

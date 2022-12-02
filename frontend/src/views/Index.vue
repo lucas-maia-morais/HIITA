@@ -1,6 +1,6 @@
 <template>
     <div>
-        <LoginRegister v-if="!loggedin" />
+        <LoginRegister @updateLoggedin="updateLoggedin" v-if="!loggedin" />
         <Home :username="username" :loggedin="loggedin" v-else />
     </div>
 </template>
@@ -20,16 +20,16 @@ export default {
       username: 'neymar',
     };
   },
-  created() {
+  async created() {
     const path = 'http://localhost:5000/HIITA/loggedin';
 
-    const req = fetch(path, {
+    const req = await fetch(path, {
       method: 'GET',
     });
-    console.log(req);
-    const res = req.json();
+    const res = await req.json();
+
     this.loggedin = res.loggedin;
-    console.log(this.loggedin);
+    this.username = res.username;
   },
 };
 </script>

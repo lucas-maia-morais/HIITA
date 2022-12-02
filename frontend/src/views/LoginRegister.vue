@@ -6,7 +6,7 @@
         <a @click="showLogin=true" :class="{active: showLogin }">Login</a>
         <a @click="showLogin=false" :class="{active: !showLogin }">Register</a>
       </div>
-      <Login v-if="showLogin" />
+      <Login @update-loggedin="updateLoggedin(res)" v-if="showLogin" />
       <Register v-else />
     </div>
 </template>
