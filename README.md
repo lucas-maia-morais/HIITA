@@ -1,3 +1,4 @@
+<!-- Colocar logo aqui -->
 # HIITA
 This is a software developed in the subject CES28 from ITA to assist Personal Trainers to provide training sheets for their clients
 
@@ -9,7 +10,7 @@ Frontend: Npm, Vuejs
 
 ## Instalação:
 
-## Banco de dados
+### Banco de dados
 
 Para instalação ver documentação do próprio [MySQL](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/) para sua OS. O MySQL server funcionará como Daemon e não precisará mais ser inicializado, somente sendo necessário a configuração da base de dados.
 
@@ -35,7 +36,7 @@ sudo npm install -g @vue/cli@4.5.11
 
 Todos os comandos aqui consideram o usuário na pasta raiz do projeto.
 
-## Banco de dados
+### Banco de dados
 A geração do banco de dados inicial pode ser feita utilizando os arquivos disponibilizados na pasta database/dumpfiles:
 
 - HIITA.sql: Base de dados inicial do projeto e caso queira criar a base de dados **hiita**
@@ -79,3 +80,83 @@ npm run serve
 
 O Projeto agora pode ser acessado de qualquer Browser pela porta http://localhost:8080/.
 
+
+
+## Utilização
+
+A tela apresenta 3 telas principais e a Navbar iterativa:
+- LoginRegister: Tela para login e registro de usuário.
+- Home: Tela com fichas de treino e seleção da execução do treino.
+- Perfil: Tela com informações pessoais e treinos realizados.
+- Navbar: Barra que redireciona para outras páginas
+
+O uso da aplicação é bem intuitiva, e faremos uma apresentação das principais funcionalidades de cada tela para tonar tudo ainda mais intuitivo.
+
+### LoginRegister
+
+Essa área só é acessível para quando não se está logado.
+
+![LoginRegister Page](images/LoginRegister.png)
+
+#### Login
+O login pode ser feito na aba de login por essa tela ao entrar na área de LoginRegister:
+
+![Login Page](images/LoginRegister.png)
+
+Caso seja aceito o login, o usuário é redirecionado para página home pessoal dele. Caso contrario receberá um aviso de login incorreto como a seguir:
+
+![FailedLogin Page](images/failedLogin.png)
+
+#### Register
+O registro pode ser feito na aba de registro pela seguinte tela na área de LoginRegister:
+![Register Page](images/cadastro.png)
+
+E caso o cadastro seja aceito recebe o seguinte aviso:
+![RegisterOk Page](images/registerok.png)
+
+E caso o cadastro não seja aceito o usuário também recebe um aviso de erro como a seguir:
+![RegisterFailed Page](images/registerfailed.png)
+
+O usuário é mantido nessa mesma área, e pode selecionar login para tentar o novo login cadastrado.
+
+### Home
+
+A página principal da home aparece da seguinte maneira
+
+![Home Page](images/homepage.png)
+
+Nela é dado um bem vindo ao usuário cadastrado, e é mostrado a lista de fichas de treinamento presentes para esse usuário com o nome e descrição da ficha e um botão para abrir uma caixa com o treino escolhido.
+
+#### Escolher ficha de treinamento
+
+Na lista de fichas de treinamento, cada linha funciona como um componente próprio e ao clicar na escolha de um será apresentada a ficha de treinamento detalhada come exercicios. A escolha é feita no botão de check a seguir:
+
+![TrainHeader Page](images/trainheader.png)
+
+#### Realizar treino
+
+Após ter feito a escolha da ficha de treinamento, uma caixa com o treino aparece na região superior da Home. Como a seguir:
+
+![TrainHeader Page](images/train.png)
+
+E o usuário pode fazer o controle dos exercicios já realizados pelo checkbox a esquerda. E ainda há dois botões, um para fechar a janela de treino caso não queira mais realizar ou queira fechar essa janela, e um para salvar o treino, que ao clicado, enviará uma mensagem para o backend de treino realizado, fechará a janela da ficha de treinamento detalhado e criará uma nova caixa com treino salvo com sucesso como a seguir:
+
+![Sucess Page](images/sucesso.png)
+
+
+### Perfil
+
+Nessa pagina, aparecem informações pessoais do usuário de forma resumida na parte superior, e em seguida as informações do treinos realizados.
+
+Essa tela está disposta como a seguir:
+![Profile Page](images/profile.png)
+
+#### Ver informações pessoais
+
+Essas informações estão dispostas na área superior como a seguir:
+![detalhespessoais Page](images/detalhespessoais.png)
+
+#### Ver treinos realizados
+Após as informações pessoais há a tela com os treinos realizados com informações como nome do treino realizado, dia do treino, e hora do salvamento do treino. E está como a seguir:
+
+![treinos Page](images/treinos.png)
