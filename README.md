@@ -3,7 +3,9 @@
 </p>
 
 # HIITA
-This is a software developed in the subject CES28 from ITA to assist Personal Trainers to provide training sheets for their clients
+Esse é um software desenvolvido na disciplina de CES28 do ITA para ajudar Treinadores Físico, Personais e Profissionais de educação física a preparar fichas de treinamento para seus Clientes Atletas. E para ajudar a visualização desse material para esses clientes Atletas.
+
+Nessa disciplina não foi trabalhado a parte do Treinador, em disciplinas futuras é desejado acrescentar essa parte do projeto.
 
 ## Requirements
 Python: 3.7
