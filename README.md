@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/hiita.png" />
+  <img src="images/hiita.jpg" />
 </p>
 
 # HIITA
@@ -205,7 +205,7 @@ O diagrama de classes a seguir não está definido de forma muito formal, porém
 
 ## Diagrama Banco de dados
 
-![DiagBcoDados Page](images/Diag_BCO_Dados.png)
+![DiagBcoDados Page](images/Diagrama_BCO_Dados.png)
 
 ## Diagrama de caso de uso
 
