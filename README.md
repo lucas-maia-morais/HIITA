@@ -1,4 +1,7 @@
-<!-- Colocar logo aqui -->
+<p align="center">
+  <img src="images/hiita.png" />
+</p>
+
 # HIITA
 This is a software developed in the subject CES28 from ITA to assist Personal Trainers to provide training sheets for their clients
 
@@ -183,3 +186,27 @@ Esse segundo botão serve para redirecionar para pagina de perfil. E é ativado 
 Esse terceiro botão serve para fazer logout, e em seguida redireciona o usuário para página de LoginRegister. E é ativado ao clicar em:
 
 ![LogoutButton Page](images/logoutbutton.png)
+
+## Arquitetura de sistema
+
+Segue a arquitetura em três camadas:
+
+![Arquitetura Page](images/arq_sistema.png)
+
+## Diagrama de classes
+
+O diagrama de classes a seguir não está definido de forma muito formal, porém serve para nortear o entendendimento das "classes" (componentes) de frontend e como estão dispostos. Algumas diretrizes seguem abaixo também:
+
+- Atributos com inicio minusculo (e.g. trainHeader) são instancias de componentes criados.
+- Para não colocar muitas setas para API não foram mostradas, mas em regra geral created() chama função de loggedin(), e para  funções (e.g. register()) no frontend com mesmo nome de métodos da API flask backend chamam esse mesmo método no backend.
+- A infraestrutura da API em Flask é utilizar uma método em cada porta de acesso, não havendo uma estrutura de classe proproamente dita, mas algo próximo a isso com métodos da API.
+
+![DiagClasses Page](images/Diag_classes.png)
+
+## Diagrama Banco de dados
+
+![DiagBcoDados Page](images/Diag_BCO_Dados.png)
+
+## Diagrama de caso de uso
+
+![DiagCasoUso Page](images/Diag_caso_de_uso.png)
