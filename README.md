@@ -101,11 +101,11 @@ Essa área só é acessível para quando não se está logado.
 #### Login
 O login pode ser feito na aba de login por essa tela ao entrar na área de LoginRegister:
 
-![Login Page](images/LoginRegister.png)
+![Login Page](images/Login.png)
 
 Caso seja aceito o login, o usuário é redirecionado para página home pessoal dele. Caso contrario receberá um aviso de login incorreto como a seguir:
 
-![FailedLogin Page](images/failedLogin.png)
+![FailedLogin Page](images/failedlogin.png)
 
 #### Register
 O registro pode ser feito na aba de registro pela seguinte tela na área de LoginRegister:
@@ -160,3 +160,26 @@ Essas informações estão dispostas na área superior como a seguir:
 Após as informações pessoais há a tela com os treinos realizados com informações como nome do treino realizado, dia do treino, e hora do salvamento do treino. E está como a seguir:
 
 ![treinos Page](images/treinos.png)
+
+
+### Navbar
+
+A Navbar apresenta na sua estrutura três botoẽs para execução de diferentes atividades, e está como a seguir:
+
+![navbar Page](images/navbar.png)
+
+
+#### Ir para home/loginRegister
+Esse botão serve para retornar a pagina inicial, que pode ser a de login caso o usuário não esteja logado. E é ativado ao clicar em:
+
+![HomeButton Page](images/homebutton.png)
+
+#### Ir para Perfil
+Esse segundo botão serve para redirecionar para pagina de perfil. E é ativado ao clicar em:
+
+![ProfileButton Page](images/profilebutton.png)
+
+#### Fazer logout
+Esse terceiro botão serve para fazer logout, e em seguida redireciona o usuário para página de LoginRegister. E é ativado ao clicar em:
+
+![LogoutButton Page](images/logoutbutton.png)
