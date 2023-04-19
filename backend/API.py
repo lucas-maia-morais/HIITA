@@ -18,12 +18,34 @@ app.secret_key = 'your secret key'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'lucas'
-app.config['MYSQL_PASSWORD'] = '123456'
+app.config['MYSQL_USER'] = 'hiita'
+app.config['MYSQL_PASSWORD'] = 'hiita'
 app.config['MYSQL_DB'] = 'hiita'
 
 # Intialize MySQL
 mysql = MySQL(app)
+
+# http://localhost:5000/HIITA/ok - this will be the logout page
+@app.route('/HIITA/ping', methods=['GET', 'POST'])
+def ping():
+    msg = 'pong'
+    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM USERNAME WHERE CPF = %s AND SENHA = %s', (username, password,))
+    # Fetch one record and return result
+    account = cursor.fetchone()
+    print(account)
+    return jsonify({'message': msg})
+
+@app.route('/HIITA/backend_ping', methods=['GET', 'POST'])
+def backend_ping():
+    msg = 'pong'
+    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SHOW TABLES')
+    # Fetch one record and return result
+    tables = cursor.fetchall()
+    return jsonify({'message': msg, 'tables': tables})
 
 # http://localhost:5000/python/logout - this will be the logout page
 @app.route('/HIITA/logout')
