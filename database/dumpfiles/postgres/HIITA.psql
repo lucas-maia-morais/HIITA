@@ -106,7 +106,27 @@ INSERT INTO EXERCICIO (ID,FICHA_ID,NOME_EXERCICIO,DESCRICAO) VALUES
 (DEFAULT, 6, 'Sprint', '10x100m 90%VM'),
 (DEFAULT, 6, 'Corrida recuperativa', '5 min trotando'),
 (DEFAULT, 6, 'Corrida Moderada', '10x100m 75%VM'),
-(DEFAULT, 6, 'Banheira de gelo', '10 min');
+(DEFAULT, 6, 'Banheira de gelo', '10 min'),
+(DEFAULT, 1, 'Agachamento', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Supino reto', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Desenvolvimento com halteres', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Remada com halteres', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Rosca direta com barra', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Tríceps corda', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Elevação lateral', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Agachamento hack', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Mesa flexora', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Panturrilha no leg press', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Barra fixa', '4 séries de 10 repetições'),
+(DEFAULT, 2, 'Flexão de braço', '4 séries de 10 repetições'),
+(DEFAULT, 2, 'Abdominal supra', '4 séries de 15 repetições'),
+(DEFAULT, 2, 'Agachamento', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Rosca alternada', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Tríceps francês', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Elevação frontal', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Elevação lateral', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Puxada aberta', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Desenvolvimento com halteres', '4 séries de 10 repetições com peso');
 
 ALTER SEQUENCE treino_id_seq RESTART WITH 7;
 INSERT INTO TREINO (ID, USERNAME_ID, FICHA_ID, DATAHORA) VALUES
