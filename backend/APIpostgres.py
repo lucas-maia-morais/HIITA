@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, request, jsonify
 import re
 import psycopg2
 from flask_cors import CORS
