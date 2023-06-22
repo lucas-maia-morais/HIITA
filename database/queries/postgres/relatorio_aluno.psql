@@ -1,0 +1,12 @@
+-- All entries from a student
+\c hiita;
+
+SELECT nome, titulo as ficha, datahora, personal_id FROM treino 
+    LEFT JOIN username ON treino.username_id = username.id
+    LEFT JOIN 
+    (select ficha.id as ficha_id, personal_id, titulo
+        FROM ficha LEFT JOIN 
+        personal ON ficha.personal_id = personal.id
+    ) AS ficha_personal ON ficha_personal.ficha_id = treino.ficha_id
+WHERE username_id = 4
+ORDER BY datahora;

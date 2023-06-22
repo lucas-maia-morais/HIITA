@@ -1,0 +1,10 @@
+You are now connected to database "hiita" as user "hiita".
+  nome  |    ficha     |      datahora       | personal_id 
+--------+--------------+---------------------+-------------
+ NEYMAR | barra        | 2023-05-08 22:00:00 |           3
+ NEYMAR | Fisioterapia | 2023-05-13 22:00:00 |           4
+ NEYMAR | Futebol 2    | 2023-05-14 10:00:00 |           5
+ NEYMAR | Futebol 1    | 2023-05-15 08:00:00 |           5
+ NEYMAR | Fisioterapia | 2023-05-16 22:00:00 |           4
+(5 rows)
+

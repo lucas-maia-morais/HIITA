@@ -1,0 +1,184 @@
+CREATE DATABASE hiita
+  ENCODING = 'UTF8';
+
+-- Connect to the new database
+\c hiita;
+
+-- Create the table
+CREATE TABLE IF NOT EXISTS USERNAME (
+    ID SERIAL PRIMARY KEY,
+    CPF INTEGER NOT NULL,
+    NOME VARCHAR(100) NOT NULL,
+    EMAIL VARCHAR(100) NOT NULL,
+    SENHA VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS PERSONAL (
+    ID SERIAL PRIMARY KEY,
+    CREF INTEGER NOT NULL,
+    NOME VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS FICHA (
+    ID SERIAL PRIMARY KEY,
+    USERNAME_ID INTEGER NOT NULL,
+    PERSONAL_ID INTEGER NOT NULL,
+    TITULO VARCHAR(100) NOT NULL,
+    DESCRICAO VARCHAR(100) NOT NULL,
+    FOREIGN KEY (USERNAME_ID)
+        REFERENCES USERNAME (ID),
+    FOREIGN KEY (PERSONAL_ID)
+        REFERENCES PERSONAL (ID)
+);
+
+CREATE TABLE IF NOT EXISTS TREINO (
+    ID SERIAL PRIMARY KEY,
+    USERNAME_ID INTEGER NOT NULL,
+    FICHA_ID INTEGER NOT NULL,
+    DATAHORA TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (FICHA_ID)
+        REFERENCES FICHA (ID),
+    FOREIGN KEY (USERNAME_ID)
+        REFERENCES USERNAME (ID)
+);
+
+CREATE TABLE IF NOT EXISTS EXERCICIO (
+    ID SERIAL PRIMARY KEY,
+    FICHA_ID INTEGER NOT NULL,
+    NOME_EXERCICIO VARCHAR(100) NOT NULL,
+    DESCRICAO VARCHAR(100) NOT NULL,
+    FOREIGN KEY (FICHA_ID) 
+        REFERENCES FICHA(ID)
+);
+
+CREATE TABLE IF NOT EXISTS SESSION (
+    TOKEN SERIAL PRIMARY KEY,
+    START TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    EXPIRATION TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP + INTERVAL '1 hour',
+    USER_ID INTEGER NOT NULL
+);
+
+ALTER SEQUENCE username_id_seq RESTART WITH 5;
+INSERT INTO USERNAME (ID, CPF, NOME, EMAIL, SENHA)
+VALUES 
+    (1, 12345678, 'RYU', 'AAAA@A.com', '2013a0402'),
+    (2, 25423544, 'LUCA', 'BBBB@A.com','2014B0402'),
+    (3, 33333312, 'BENICIO','CCCC@A.com','2015C0402'),
+    (4, 10, 'NEYMAR', 'neymarjr@gmail.com', 'hexa');
+
+ALTER SEQUENCE personal_id_seq RESTART WITH 4;
+INSERT INTO PERSONAL (ID, CREF, NOME)
+VALUES
+    (1, 876543, 'Jefferson'),
+    (2, 546844, 'Pedro'),
+    (3, 357664, 'Matheus'),
+    (DEFAULT, 101011, 'Rodrigo Lasmar'),
+    (DEFAULT, 101010, 'Tite');
+
+ALTER SEQUENCE personal_id_seq RESTART WITH 9;
+
+INSERT INTO PERSONAL (ID, CREF, NOME) VALUES
+(DEFAULT, 123456, 'Alex'),
+(DEFAULT, 789012, 'Maria'),
+(DEFAULT, 345678, 'Lucas'),
+(DEFAULT, 901234, 'Camila'),
+(DEFAULT, 567890, 'Pedro');
+
+INSERT INTO FICHA (USERNAME_ID, PERSONAL_ID, TITULO, DESCRICAO) VALUES 
+(1, 1, 'flexao', 'tipo aberta'),
+(2, 2, 'abdominal','tipo TACF'),
+(3, 3, 'barra','do tipo supinada'),
+(4, 4, 'Fisioterapia', 'Recuperação do tornozelo'),
+(4, 5, 'Futebol 1', 'Treino Tatico'),
+(4, 5, 'Futebol 2', 'Treino Fisico');
+
+ALTER SEQUENCE ficha_id_seq RESTART WITH 7;
+
+INSERT INTO FICHA (USERNAME_ID, PERSONAL_ID, TITULO, DESCRICAO) VALUES 
+(1, 1, 'Ficha 1', 'Descrição da ficha 1'),
+(2, 2, 'Ficha 2', 'Descrição da ficha 2'),
+(3, 3, 'Ficha 3', 'Descrição da ficha 3'),
+(4, 4, 'Ficha 4', 'Descrição da ficha 4'),
+(1, 1, 'Ficha 5', 'Descrição da ficha 5'),
+(2, 2, 'Ficha 6', 'Descrição da ficha 6'),
+(3, 3, 'Ficha 7', 'Descrição da ficha 7'),
+(4, 4, 'Ficha 8', 'Descrição da ficha 8'),
+(1, 1, 'Ficha 9', 'Descrição da ficha 9'),
+(2, 2, 'Ficha 10', 'Descrição da ficha 10');
+
+ALTER SEQUENCE exercicio_id_seq RESTART WITH 4;
+INSERT INTO EXERCICIO (ID,FICHA_ID,NOME_EXERCICIO,DESCRICAO) VALUES 
+(1, 1, 'flexao mao fechada','tipo aberta'),
+(2, 2, 'abdominal prancha','tipo TACF'),
+(3, 3, 'barra supinada', 'do tipo supinada'),
+(DEFAULT, 4, 'Choque Eletrico', '30 min'),
+(DEFAULT, 4, 'Alongamento do tornozelo com elastico', '3x10'),
+(DEFAULT, 4, 'Piscina', '10 min'),
+(DEFAULT, 5, 'Alongamento', '5 min'),
+(DEFAULT, 5, 'Aquecimento Bobinho 10x1', '5 min'),
+(DEFAULT, 5, 'Aquecimento Bobinho 10x2', '5 min'),
+(DEFAULT, 5, 'Posicionamento Tatico 4-4-2', '20x posicionamento de ataque'),
+(DEFAULT, 5, 'Posicionamento Tatico 4-4-2', '20x posicionamento de defesa'),
+(DEFAULT, 5, 'Posicionamento Tatico 4-3-3', '10x posicionamento de ataque'),
+(DEFAULT, 5, 'Posicionamento Tatico 4-3-3', '10x posicionamento de defesa'),
+(DEFAULT, 5, 'Treino de penaltis', '10 min'),
+(DEFAULT, 5, 'Banheira de gelo', '10 min'),
+(DEFAULT, 6, 'Corrida leve', '30 min com 60%VM'),
+(DEFAULT, 6, 'Sprint', '10x100m 90%VM'),
+(DEFAULT, 6, 'Corrida recuperativa', '5 min trotando'),
+(DEFAULT, 6, 'Corrida Moderada', '10x100m 75%VM'),
+(DEFAULT, 6, 'Banheira de gelo', '10 min'),
+(DEFAULT, 1, 'Agachamento', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Supino reto', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Desenvolvimento com halteres', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Remada com halteres', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Rosca direta com barra', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Tríceps corda', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Elevação lateral', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Agachamento hack', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Mesa flexora', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Panturrilha no leg press', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Barra fixa', '4 séries de 10 repetições'),
+(DEFAULT, 2, 'Flexão de braço', '4 séries de 10 repetições'),
+(DEFAULT, 2, 'Abdominal supra', '4 séries de 15 repetições'),
+(DEFAULT, 2, 'Agachamento', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Rosca alternada', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Tríceps francês', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Elevação frontal', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Elevação lateral', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Puxada aberta', '4 séries de 10 repetições com peso'),
+(DEFAULT, 2, 'Desenvolvimento com halteres', '4 séries de 10 repetições com peso');
+
+ALTER SEQUENCE exercicio_id_seq RESTART WITH 41;
+
+INSERT INTO EXERCICIO (ID, FICHA_ID, NOME_EXERCICIO, DESCRICAO) VALUES 
+(DEFAULT, 1, 'Flexão de braço', '4 séries de 15 repetições'),
+(DEFAULT, 1, 'Agachamento livre', '4 séries de 10 repetições com peso'),
+(DEFAULT, 1, 'Rosca direta com halteres', '3 séries de 12 repetições'),
+(DEFAULT, 1, 'Leg Press', '4 séries de 8 repetições com peso'),
+(DEFAULT, 1, 'Elevação de ombros', '3 séries de 10 repetições'),
+(DEFAULT, 1, 'Desenvolvimento militar', '3 séries de 8 repetições'),
+(DEFAULT, 2, 'Abdominal infra', '4 séries de 15 repetições'),
+(DEFAULT, 2, 'Agachamento sumô', '4 séries de 12 repetições com peso'),
+(DEFAULT, 2, 'Remada baixa', '3 séries de 10 repetições'),
+(DEFAULT, 2, 'Supino inclinado', '4 séries de 8 repetições com peso'),
+(DEFAULT, 2, 'Flexão de braço diamante', '3 séries de 12 repetições'),
+(DEFAULT, 3, 'Agachamento búlgaro', '4 séries de 10 repetições com peso'),
+(DEFAULT, 3, 'Rosca concentrada', '3 séries de 12 repetições'),
+(DEFAULT, 3, 'Elevação frontal alternada', '3 séries de 10 repetições'),
+(DEFAULT, 3, 'Stiff', '4 séries de 8 repetições com peso'),
+(DEFAULT, 3, 'Supino reto com halteres', '3 séries de 12 repetições'),
+(DEFAULT, 4, 'Agachamento frontal', '4 séries de 10 repetições com peso'),
+(DEFAULT, 4, 'Rosca inversa', '3 séries de 12 repetições'),
+(DEFAULT, 4, 'Elevação lateral inclinada', '3 séries de 10 repetições'),
+(DEFAULT, 4, 'Panturrilha sentado', '4 séries de 15 repetições com peso'),
+(DEFAULT, 4, 'Crucifixo reto', '3 séries de 12 repetições');
+
+ALTER SEQUENCE treino_id_seq RESTART WITH 7;
+INSERT INTO TREINO (ID, USERNAME_ID, FICHA_ID, DATAHORA) VALUES
+(4, 1, 1, '2022-12-01 10:00:00'),
+(5, 2, 2, '2022-12-02 20:00:00'),
+(6, 3, 3, '2022-12-03 22:00:00'),
+(1, 4, 4, '2023-05-03 15:00:00'),
+(2, 4, 5, '2023-05-13 17:00:00'),
+(3, 4, 6, '2022-06-20 19:00:00');

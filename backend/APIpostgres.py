@@ -15,13 +15,13 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 # Enter your database connection details below
 def get_db_connection():
-    conn = psycopg2.connect(host=os.environ['DB_HOST'],
-                            database=os.environ['DB_NAME'],
-                            user=os.environ['DB_USER'],
-                            password=os.environ['DB_PASSWORD'])
+    conn = psycopg2.connect(host= 'localhost',#os.environ['DB_HOST'],
+                            database= 'hiita',#os.environ['DB_NAME'],
+                            user='hiita', #os.environ['DB_USER'],
+                            password='hiita') #os.environ['DB_PASSWORD'])
     return conn
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -89,41 +89,92 @@ def logout_call(token):
 # http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
 @app.route('/HIITA/login', methods=['GET', 'POST'])
 def login():
-    # Output message if something goes wrong...
-    msg = ''
-    data = request.get_json()
-    print(data)
-    error = True
-    # Check if "username" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in data and 'password' in data:
-        # Create variables for easy access
-        username = data['username']
-        password = data['password']
-        # Check if account exists using MySQL
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('SELECT ID FROM USERNAME WHERE CPF = %s AND SENHA = %s', (username, password,))
-        # Fetch one record and return result
-        account = cur.fetchone()
-        print(account)
-        # If account exists in accounts table in out database
-        if account:
-            # Create session data, we can access this data in other routes
-            cur.execute('INSERT INTO SESSION VALUES (DEFAULT, DEFAULT, DEFAULT, %s) RETURNING TOKEN', (account,))
-            token = cur.fetchone()
-            conn.commit()
-            cur.close()
-            conn.close()
-            error = False
-            # Redirect to home page
-            return jsonify({'message': msg, 'error': error, 'token': token})
-        else:
-            cur.close()
-            conn.close()
-            # Account doesnt exist or username/password incorrect
-            msg = 'CPF/Senha Incorreto(s)!'
-    # Show the login form with message (if any)
-    return jsonify({'message': msg, 'error': error})
+    try: 
+        # Output message if something goes wrong...
+        msg = ''
+        data = request.get_json()
+        print(data)
+        error = True
+        # Check if "username" and "password" POST requests exist (user submitted form)
+        if request.method == 'POST' and 'username' in data and 'password' in data:
+            # Create variables for easy access
+            username = data['username']
+            password = data['password']
+
+            # Check if account exists using MySQL
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute('SELECT ID FROM USERNAME WHERE CPF = %s AND SENHA = %s', (username, password,))
+            # Fetch one record and return result
+            account = cur.fetchone()
+            print(account)
+            # If account exists in accounts table in out database
+            if account:
+                # Create session data, we can access this data in other routes
+                cur.execute('INSERT INTO SESSION VALUES (DEFAULT, DEFAULT, DEFAULT, %s) RETURNING TOKEN', (account,))
+                token = cur.fetchone()
+                conn.commit()
+                cur.close()
+                conn.close()
+                error = False
+                # Redirect to home page
+                return jsonify({'message': "OK", 'token': token}), 200
+            else:
+                cur.close()
+                conn.close()
+                # Account doesnt exist or username/password incorrect
+                msg = 'CPF/Senha Incorreto(s)!'
+                return "BAD_REQUEST", 400
+        # Show the login form with message (if any)
+        return jsonify({'message': msg, 'error': error}), 400
+    except Exception as err:
+        print(err)
+        return "SERVER_ERROR", 500
+
+# http://localhost:5000/pythonlogin/ - the following will be our login page, which will use both GET and POST requests
+@app.route('/HIITA/login_personal', methods=['GET', 'POST'])
+def login_personal():
+    try: 
+        # Output message if something goes wrong...
+        msg = ''
+        data = request.get_json()
+        print(data)
+        error = True
+        # Check if "username" and "password" POST requests exist (user submitted form)
+        if request.method == 'POST' and 'username' in data and 'password' in data:
+            # Create variables for easy access
+            nome = data['username']
+            cref = data['password']
+
+            # Check if account exists using MySQL
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute('SELECT ID FROM PERSONAL WHERE NOME = %s AND CREF = %s', (nome, cref,))
+            # Fetch one record and return result
+            account = cur.fetchone()
+            print(account)
+            # If account exists in accounts table in out database
+            if account:
+                # Create session data, we can access this data in other routes
+                cur.execute('INSERT INTO SESSION VALUES (DEFAULT, DEFAULT, DEFAULT, %s) RETURNING TOKEN', (account,))
+                token = cur.fetchone()
+                conn.commit()
+                cur.close()
+                conn.close()
+                error = False
+                # Redirect to home page
+                return jsonify({'message': "OK", 'token': token}), 200
+            else:
+                cur.close()
+                conn.close()
+                # Account doesnt exist or username/password incorrect
+                msg = 'Nome/CREF Incorreto(s)!'
+                return "BAD_REQUEST", 400
+        # Show the login form with message (if any)
+        return jsonify({'message': msg, 'error': error}), 400
+    except Exception as err:
+        print(err)
+        return "SERVER_ERROR", 500
 
 # http://localhost:5000/pythinlogin/register - this will be the registration page, we need to use both GET and POST requests
 @app.route('/HIITA/register', methods=['GET', 'POST'])
@@ -279,3 +330,24 @@ def save():
             return jsonify({'error': False})
     # User is not loggedin redirect to login page
     return jsonify({'error': True})
+
+# http://localhost:5000/pythinlogin/alunos - this will be the initial page, only accessible for loggedin trainers
+@app.route('/HIITA/alunos', methods=['GET','POST'])
+def alunos():
+    # Check if user is loggedin
+    data = request.get_json()
+    # Check if user is loggedin
+    if request.method == 'POST' and 'token' in data:
+        user_id = check_login(data['token'])
+        if user_id:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute('SELECT USERNAME.NOME, MAX(TREINO.DATAHORA) AS DATAHORA \
+                        FROM FICHA,USERNAME,TREINO WHERE (FICHA.PERSONAL_ID = %s) \
+                        AND (USERNAME.ID = FICHA.USERNAME_ID) AND (FICHA.ID = TREINO.FICHA_ID)\
+                        GROUP BY USERNAME.NOME ORDER BY DATAHORA;', (user_id,))
+            alunos = cur.fetchall()
+            cur.close()
+            conn.close()
+            return jsonify({'message': 'OK', 'alunos': alunos}), 200
+    return "BAD_REQUEST", 400
