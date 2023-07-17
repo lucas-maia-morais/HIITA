@@ -15,28 +15,32 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 # Enter your database connection details below
 def get_db_connection():
-    conn = psycopg2.connect(host= 'localhost',#os.environ['DB_HOST'],
-                            database= 'hiita',#os.environ['DB_NAME'],
-                            user='hiita', #os.environ['DB_USER'],
-                            password='hiita') #os.environ['DB_PASSWORD'])
+    conn = psycopg2.connect(host= os.environ['DB_HOST'],
+                            database= os.environ['DB_NAME'],
+                            user=os.environ['DB_USER'],
+                            password=os.environ['DB_PASSWORD'])
     return conn
+
 
 @app.route('/', methods=['GET'])
 def index():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM username;')
-    users = cur.fetchall()
-    cur.close()
-    conn.close()
-    return jsonify({'users': users})
+    try: 
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM username;')
+        users = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({'users': users}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 # http://localhost:5000/HIITA/ok
 @app.route('/HIITA/ping', methods=['GET', 'POST'])
 def ping():
     msg = 'pong'
     
-    return jsonify({'message': msg})
+    return jsonify({'message': msg}), 200
 
 @app.route('/HIITA/backend_ping', methods=['GET', 'POST'])
 def backend_ping():
